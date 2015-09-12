@@ -49,12 +49,12 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		}
 		else if("setDeviceTrackingDisabled".equals(action))
 		{
-			setDeviceTrackingDisabled(args, callbackContext);
+			setDeviceTrackingDisabled(args);
 			return true;
 		}
 		else if("setMeasureSessionDuration".equals(action))
 		{
-			setMeasureSessionDuration(args, callbackContext);
+			setMeasureSessionDuration(args);
 			return true;
 		}
 		else if("getAppsFlyerUID".equals(action))
@@ -272,7 +272,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		}	
 	}
 
-	private void setDeviceTrackingDisabled(JSONArray parameters, CallbackContext callbackContext)
+	private void setDeviceTrackingDisabled(JSONArray parameters)
 	{
 		try
 		{
