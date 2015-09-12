@@ -49,22 +49,27 @@ Android: Copy `AppsFlyerPlugin.java` to `platforms/android/src/com/appsflyer/cor
 document.addEventListener("deviceready", function(){
     var args = [];
     var devKey = "xxXXXXXxXxXXXXxXXxxxx8";   // your AppsFlyer devKey
+    var measureSessionDuration = true;
     args.push(devKey);
+
     var userAgent = window.navigator.userAgent.toLowerCase();
                           
     if (/iphone|ipad|ipod/.test( userAgent )) {
         var appId = "123456789";            // your ios app id in app store
         args.push(appId);
     }
-	window.plugins.appsFlyer.initSdk(args);
+
+    args.push(measureSessionDuration);
+
+	window.AppsFlyer.initSdk(args);
 }, false);
 ```
 
 #### 2\. Set currency code (optional)
 ```javascript
 //USD is default value. Acceptable ISO(http://www.xe.com/iso4217.php) Currency codes here. Examples:  
-//British Pound: window.plugins.appsFlyer.setCurrencyCode("GBP");  
-window.plugins.appsFlyer.setCurrencyCode("USD");
+//British Pound: window.AppsFlyer.setCurrencyCode("GBP");  
+window.AppsFlyer.setCurrencyCode("USD");
 ```
 #### 3\. Set customer user ID (Advance)
 *Setting your own custom ID will enable you to cross-reference your own unique ID with AppsFlyer’s user ID and the 
@@ -72,7 +77,7 @@ other devices’ IDs. This ID will be available at AppsFlyer CSV reports along w
 with you internal IDs.*  
 **Note:** *The ID must be set during the first launch of the app at the SDK initialization. The best practice is to call to this API during `deviceready` event if possible.*
 ```javascript
-window.plugins.appsFlyer.setAppUserId(userId);
+window.AppsFlyer.setCustomerUserId(userId);
 ```
 #### 4\. In App Events Tracking API (optional)
 *These events help you track how loyal users discover your app and attribute them to specific campaign/source.*
@@ -83,22 +88,22 @@ to track ROI (Return on Investment) and LTV (Lifetime Value).*
 add events dynamically by adding them directly to the application code.*
 ```javascript
 // eventName - any string to define the event name. For example: “registration” or “purchase”
-// eventValue - the sales value. For example: 0.99 or 0.79
-window.plugins.appsFlyer.sendTrackingWithEvent(eventName, eventValue);
-// window.plugins.appsFlyer.sendTrackingWithEvent(eventName, "");
+// eventValues - map with the sales value. For example: {key: 0.99} or {key: 0.79}
+window.AppsFlyer.trackEvent(eventName, eventValues);
+// window.AppsFlyer.trackEvent(eventName, {});
 ```
 #### 5\. Get AppsFlyer’s Unique Device UID (Advanced)
 *Get AppsFlyer’s proprietary device ID. AppsFlyer device ID is the main ID used by AppsFlyer in the Reports and API’s.*
 ```javascript
 // getUserIdCallbackFn - callback function
-window.plugins.appsFlyer.getAppsFlyerUID(getUserIdCallbackFn);
+window.AppsFlyer.getAppsFlyerUID(getUserIdCallbackFn);
 ```
 ###### Example:
 ```javascript
 var getUserIdCallbackFn = function(id) {
 	alert('received id is: ' + id);
 }
-window.plugins.appsFlyer.getAppsFlyerUID(getUserIdCallbackFn);
+window.AppsFlyer.getAppsFlyerUID(getUserIdCallbackFn);
 ```
 #### 6\. Accessing AppsFlyer Attribution / Conversion Data from the SDK (Deferred 
 Deep-linking). Read more: [Android](http://support.appsflyer.com/entries/69796693-Accessing-AppsFlyer-Attribution-Conversion-Data-from-the-SDK-Deferred-Deep-linking-), [iOS](http://support.appsflyer.com/entries/22904293-Testing-AppsFlyer-iOS-SDK-Integration-Before-Submitting-to-the-App-Store-)  

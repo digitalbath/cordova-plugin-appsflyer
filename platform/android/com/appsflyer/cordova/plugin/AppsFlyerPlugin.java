@@ -1,6 +1,10 @@
 package com.appsflyer.cordova.plugin;
 
+import java.lang.Boolean;
 import java.util.Map;
+import java.util.List;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -14,6 +18,8 @@ import org.json.JSONException;
 
 import com.appsflyer.AppsFlyerConversionListener;
 import com.appsflyer.AppsFlyerLib;
+import com.appsflyer.AppsFlyerProperties;
+import com.appsflyer.AppsFlyerProperties.EmailsCryptType;
 
 import android.content.Context;
 import android.util.Log;
@@ -22,6 +28,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 
 	private static final String TAG = "AppsFlyerPlugin";
 	private static CallbackContext context;
+	private static boolean measureSessionDuration;
 
 	@Override
 	public boolean execute(final String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
@@ -30,9 +37,24 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			setCurrencyCode(args);
 			return true;
 		}
-		else if("setAppUserId".equals(action))
+		else if("setCustomerUserId".equals(action))
 		{
-			setAppUserId(args, callbackContext);
+			setCustomerUserId(args, callbackContext);
+			return true;
+		}
+		else if("setUserEmails".equals(action))
+		{
+			setUserEmails(args, callbackContext);
+			return true;
+		}
+		else if("setDeviceTrackingDisabled".equals(action))
+		{
+			setDeviceTrackingDisabled(args, callbackContext);
+			return true;
+		}
+		else if("setMeasureSessionDuration".equals(action))
+		{
+			setMeasureSessionDuration(args, callbackContext);
 			return true;
 		}
 		else if("getAppsFlyerUID".equals(action))
@@ -40,9 +62,9 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			getAppsFlyerUID(args, callbackContext);
 			return true;
 		}
-		else if("sendTrackingWithEvent".equals(action))
+		else if("trackEvent".equals(action))
 		{
-			sendTrackingWithEvent(args);
+			trackEvent(args);
 			return true;
 		}
 		else if("initSdk".equals(action))
@@ -57,6 +79,23 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		}
 		return false;
 	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+
+		if (measureSessionDuration) {
+			AppsFlyerLib.onActivityResume(this);
+		}
+	}
+	@Override
+	public void onPause() {
+		super.onPause();
+
+		if (measureSessionDuration) {
+			AppsFlyerLib.onActivityPause(this);
+		}
+	}
 	
 	private void initSdk(JSONArray parameters, final CallbackContext callbackContext) {
 		context = callbackContext;
@@ -64,6 +103,8 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		try
 		{
 			devKey = parameters.getString(0);
+			measureSessionDuration = parameters.getBoolean(1);
+
 			if(devKey != null){
 				AppsFlyerLib.setAppsFlyerKey(devKey);
 				initListener(callbackContext);
@@ -77,14 +118,14 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			return;
 		}
     	
-		AppsFlyerLib.registerConversionListener(cordova.getActivity().getApplicationContext(), new AppsFlyerConversionListener(){
+		AppsFlyerLib.registerConversionListener(cordova.getActivity().getApplicationContext(), new AppsFlyerConversionListener() {
 
 			@Override
 			public void onAppOpenAttribution(Map<String, String> arg0) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 			@Override
 			public void onAttributionFailure(String errorMessage) {
 				//Added this to avoid compilation failure
@@ -117,7 +158,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 				Log.w(TAG, "onInstallConversionFailure: " + arg0);
 				context.error("onInstallConversionFailure: " + arg0);
 			}
-			
+
 		});
             	
 	}
@@ -136,13 +177,19 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		callbackContext.sendPluginResult(result);
 	}
 	
-	private void sendTrackingWithEvent(JSONArray parameters) {
+	private void trackEvent(JSONArray parameters) {
 		String eventName = null;
-		String eventValue = "";
+		JSONObject eventValueJSON = null;
+		Map<String, Object> eventValue = null;
+
 		try
 		{
 			eventName = parameters.getString(0);
-			eventValue = parameters.getString(1);
+			eventValueJSON = parameters.getJSONObject(1);
+
+			if (eventValueJSON != null) {
+				eventValue = toMap(eventValueJSON);
+			}
 		}
 		catch (JSONException e) 
 		{
@@ -154,7 +201,20 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			return;
 		}
 		Context c = this.cordova.getActivity().getApplicationContext();
-		AppsFlyerLib.sendTrackingWithEvent(c, eventName, eventValue);
+		AppsFlyerLib.trackEvent(c, eventName, eventValue);
+	}
+
+	public static Map<String, Object> toMap(JSONObject object) throws JSONException {
+		Map<String, Object> map = new HashMap<String, Object>();
+
+		Iterator<String> keysItr = object.keys();
+		while(keysItr.hasNext()) {
+			String key = keysItr.next();
+			Object value = object.get(key);
+			map.put(key, value);
+		}
+
+		return map;
 	}
 
 
@@ -177,8 +237,21 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		AppsFlyerLib.setCurrencyCode(currencyId);
 	
 	}
+
+	private void setMeasureSessionDuration(JSONArray parameters)
+	{
+		try
+		{
+			measureSessionDuration = parameters.getBoolean(0);
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+			return;
+		}
+	}
 	
-	private void setAppUserId(JSONArray parameters, CallbackContext callbackContext)
+	private void setCustomerUserId(JSONArray parameters, CallbackContext callbackContext)
 	{
 		try
 		{
@@ -187,7 +260,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			{
 				return;
 			}
-        	AppsFlyerLib.setAppUserId(customeUserId);
+        	AppsFlyerLib.setCustomerUserId(customeUserId);
         	PluginResult r = new PluginResult(PluginResult.Status.OK);
         	r.setKeepCallback(false);
         	callbackContext.sendPluginResult(r);
@@ -197,6 +270,60 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			e.printStackTrace();
 			return;
 		}	
+	}
+
+	private void setDeviceTrackingDisabled(JSONArray parameters, CallbackContext callbackContext)
+	{
+		try
+		{
+        	AppsFlyerLib.setDeviceTrackingDisabled(parameters.getBoolean(0));
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+			return;
+		}
+	}
+
+	private void setUserEmails(JSONArray parameters, CallbackContext callbackContext)
+	{
+		try
+		{
+			JSONArray emailsJSON = parameters.getJSONArray(0);
+			String cryptMethodValue = parameters.getString(1);
+			EmailsCryptType cryptMethod = null;
+
+			if(emailsJSON == null || emailsJSON.length() == 0)
+			{
+				return;
+			}
+
+			List<String> emails = new ArrayList<String>();
+			for (int i=0; i < emailsJSON.length(); i++) {
+				emails.add(emailsJSON.getString(i));
+			}
+
+			String[] emailVarargs = emails.toArray(new String[emails.size()]);
+
+			if ("MD5".equals(cryptMethodValue)) {
+				cryptMethod = EmailsCryptType.MD5;
+			} else if ("SHA1".equals(cryptMethodValue)) {
+				cryptMethod = EmailsCryptType.SHA1;
+			} else {
+				cryptMethod = EmailsCryptType.NONE;
+			}
+
+			AppsFlyerLib.setUserEmails(cryptMethod, emailVarargs);
+
+        	PluginResult r = new PluginResult(PluginResult.Status.OK);
+        	r.setKeepCallback(false);
+        	callbackContext.sendPluginResult(r);
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+			return;
+		}
 	}
 	
 	private void getAppsFlyerUID(JSONArray parameters, CallbackContext callbackContext)

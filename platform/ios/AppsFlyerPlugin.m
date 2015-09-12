@@ -52,7 +52,7 @@
     [AppsFlyerTracker sharedTracker].currencyCode = currencyId;
 }
 
-- (void)setAppUserId:(CDVInvokedUrlCommand *)command
+- (void)setCustomerUserId:(CDVInvokedUrlCommand *)command
 {
     if ([command.arguments count] == 0) {
         return;
@@ -72,7 +72,7 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
-- (void)sendTrackingWithEvent:(CDVInvokedUrlCommand *)command
+- (void)trackEvent:(CDVInvokedUrlCommand *)command
 {
     if ([command.arguments count] < 2) {
         return;
