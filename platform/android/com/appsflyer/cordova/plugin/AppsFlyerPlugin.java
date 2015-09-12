@@ -85,7 +85,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		super.onResume(multitasking);
 
 		if (measureSessionDuration) {
-			AppsFlyerLib.onActivityResume(this);
+			AppsFlyerLib.onActivityResume(cordova.getActivity());
 		}
 	}
 
@@ -94,7 +94,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		super.onPause(multitasking);
 
 		if (measureSessionDuration) {
-			AppsFlyerLib.onActivityPause(this);
+			AppsFlyerLib.onActivityPause(cordova.getActivity());
 		}
 	}
 	
