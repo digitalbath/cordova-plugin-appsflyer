@@ -27,7 +27,7 @@
     <keywords>cordova,appsflyer</keywords>
     <repo>https://github.com/aliatsis/cordova-plugin-appsflyer.git</repo>
     <engines>
-        <engine name="cordova" version=">=3.3.0"/>
+        <engine name="cordova" version=">=4.0.0"/>
     </engines>
     <js-module src="www/appsflyer.js" name="appsflyer">
         <clobbers target="AppsFlyer" />
@@ -60,7 +60,7 @@
         <source-file src="platform/android/com/appsflyer/cordova/plugin/AppsFlyerPlugin.java" target-dir="src/com/appsflyer/cordova/plugin" />
         <source-file src="platform/android/libs/AF-Android-SDK-v2.3.1.18.jar" target-dir="libs"/>
 
-        <dependency id="com.google.playservices" version="22.0.0" />
+        <framework src="com.google.android.gms:play-services-analytics:7.3.0" />
     </platform>
 
     <!-- <platform name="ios">
