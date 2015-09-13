@@ -104,8 +104,13 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		String devKey = null;
 		try
 		{
-			devKey = parameters.getString(0);
-			measureSessionDuration = parameters.getBoolean(1);
+			if (parameters.length() > 0) {
+				devKey = parameters.getString(0);
+			}
+
+			if (parameters.length() > 1) {				
+				measureSessionDuration = parameters.getBoolean(1);
+			}
 
 			if(devKey != null){
 				AppsFlyerLib.setAppsFlyerKey(devKey);
@@ -292,8 +297,12 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 		try
 		{
 			JSONArray emailsJSON = parameters.getJSONArray(0);
-			String cryptMethodValue = parameters.getString(1);
 			EmailsCryptType cryptMethod = null;
+			String cryptMethodValue = "";
+
+			if (parameters.length() > 1) {
+				cryptMethodValue = parameters.getString(1);
+			}
 
 			if(emailsJSON == null || emailsJSON.length() == 0)
 			{

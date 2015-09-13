@@ -18,6 +18,10 @@
     cordova.exec(null, null, "AppsFlyerPlugin", "setCustomerUserId", [customerUserId]);
   };
 
+  AppsFlyer.prototype.setUserEmails = function(emails, cryptMethod) {
+    cordova.exec(null, null, "AppsFlyerPlugin", "setUserEmails", [emails, cryptMethod]);
+  };
+
   AppsFlyer.prototype.setMeasureSessionDuration = function(measureSessionDuration) {
     cordova.exec(null, null, "AppsFlyerPlugin", "setMeasureSessionDuration", [!!measureSessionDuration]);
   };
