@@ -30,6 +30,10 @@
     cordova.exec(null, null, "AppsFlyerPlugin", "setDeviceTrackingDisabled", [!!disabled]);
   };
 
+  AppsFlyer.prototype.disableAppleAdSupportTracking = function(disabled) {
+    cordova.exec(null, null, "AppsFlyerPlugin", "disableAppleAdSupportTracking", [!!disabled]);
+  };
+
   AppsFlyer.prototype.getAppsFlyerUID = function(callbackFn) {
     cordova.exec(function(result) {
         callbackFn(result);
