@@ -27,7 +27,7 @@
     <keywords>cordova,appsflyer</keywords>
     <repo>https://github.com/aliatsis/cordova-plugin-appsflyer.git</repo>
     <engines>
-        <engine name="cordova" version=">=4.0.0"/>
+        <engine name="cordova" version=">=3.8.0"/>
     </engines>
     <js-module src="www/appsflyer.js" name="appsflyer">
         <clobbers target="AppsFlyer" />
