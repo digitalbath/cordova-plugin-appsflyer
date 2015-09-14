@@ -93,7 +93,8 @@
         return;
     }
     
-    [AppsFlyerTracker sharedTracker].deviceTrackingDisabled = [[command.arguments objectAtIndex:0] boolValue];
+    BOOL disabled = [command.arguments objectAtIndex:0];
+    [AppsFlyerTracker sharedTracker].deviceTrackingDisabled = disabled;
 }
 
 - (void)disableAppleAdSupportTracking:(CDVInvokedUrlCommand *)command
@@ -102,7 +103,8 @@
         return;
     }
     
-    [AppsFlyerTracker sharedTracker].disableAppleAdSupportTracking = [[command.arguments objectAtIndex:0] boolValue];
+    BOOL disabled = [command.arguments objectAtIndex:0];
+    [AppsFlyerTracker sharedTracker].disableAppleAdSupportTracking = disabled;
 }
 
 - (void)getAppsFlyerUID:(CDVInvokedUrlCommand *)command
