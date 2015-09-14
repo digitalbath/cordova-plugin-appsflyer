@@ -11,6 +11,9 @@
 
 - (void)setCurrencyCode:(CDVInvokedUrlCommand*)command;
 - (void)setCustomerUserId:(CDVInvokedUrlCommand*)command;
+- (void)setUserEmails:(CDVInvokedUrlCommand*)command;
+- (void)setDeviceTrackingDisabled:(CDVInvokedUrlCommand*)command;
+- (void)disableAppleAdSupportTracking:(CDVInvokedUrlCommand*)command;
 - (void)getAppsFlyerUID:(CDVInvokedUrlCommand*)command;
 - (void)trackEvent:(CDVInvokedUrlCommand*)command;
 - (void)onConversionDataReceived:(NSDictionary*) installData;

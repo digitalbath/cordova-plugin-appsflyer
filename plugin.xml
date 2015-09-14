@@ -61,7 +61,7 @@
         <source-file src="platform/android/libs/AF-Android-SDK-v2.3.1.18.jar" target-dir="libs"/>
     </platform>
 
-    <!-- <platform name="ios">
+    <platform name="ios">
         <config-file target="config.xml" parent="/*">
             <feature name="AppsFlyerPlugin">
                 <param name="ios-package" value="AppsFlyerPlugin" />
@@ -74,5 +74,5 @@
         <source-file src="platform/ios/libAppsFlyerLib.a" compiler-flags="-lAppsFlyerLib" framework="true" />
         <framework src="AdSupport.framework" weak="true" />
         <framework src="iAd.framework" weak="true" />
-    </platform> -->
+    </platform>
 </plugin>

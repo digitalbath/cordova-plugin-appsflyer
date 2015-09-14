@@ -62,6 +62,49 @@
     [AppsFlyerTracker sharedTracker].customerUserID  = userId;
 }
 
+- (void)setUserEmails:(CDVInvokedUrlCommand *)command
+{
+    if ([command.arguments count] == 0) {
+        return;
+    }
+    
+    NSString* emails = [command.arguments objectAtIndex:0];
+    NSString* cryptMethodValue = "";
+    EmailCryptType* cryptMethod;
+
+    if ([command.arguments count] == 2) {
+        cryptMethodValue = [command.arguments objectAtIndex:1];
+    }
+
+    if ([@"md5" isEqualToString:cryptMethodValue]) {
+        cryptMethod = EmailCryptTypeMD5;
+    } else if ([@"sha1" isEqualToString:cryptMethodValue]) {
+        cryptMethod = EmailCryptTypeSHA1;
+    } else {
+        cryptMethod = EmailCryptTypeNone;
+    }
+
+    [[AppsFlyerTracker sharedTracker] setUserEmails:emails withCryptType:cryptMethod];
+}
+
+- (void)setDeviceTrackingDisabled:(CDVInvokedUrlCommand *)command
+{
+    if ([command.arguments count] == 0) {
+        return;
+    }
+    
+    [AppsFlyerTracker sharedTracker].deviceTrackingDisabled = [[command.arguments objectAtIndex:0] boolValue];
+}
+
+- (void)disableAppleAdSupportTracking:(CDVInvokedUrlCommand *)command
+{
+    if ([command.arguments count] == 0) {
+        return;
+    }
+    
+    [AppsFlyerTracker sharedTracker].disableAppleAdSupportTracking = [[command.arguments objectAtIndex:0] boolValue];
+}
+
 - (void)getAppsFlyerUID:(CDVInvokedUrlCommand *)command
 {
     NSString* userId = [[AppsFlyerTracker sharedTracker] getAppsFlyerUID];
@@ -79,11 +122,11 @@
     }
     
     NSString* eventName = [command.arguments objectAtIndex:0];
-    NSString* eventValue = [command.arguments objectAtIndex:1];
-    [[AppsFlyerTracker sharedTracker] trackEvent:eventName withValue:eventValue];
+    NSDictionary* eventValues = [command.arguments objectAtIndex:1];
+    [[AppsFlyerTracker sharedTracker] trackEvent:eventName withValues:eventValues];
 }
 
--(void)onConversionDataReceived:(NSDictionary*) installData {
+- (void)onConversionDataReceived:(NSDictionary*) installData {
     
     if (self.callbackId) {
         NSLog(@"[AppsFlyer Plugin] onConversionDataReceived: sending plugin result");
@@ -98,7 +141,7 @@
     }
 }
 
--(void)onConversionDataRequestFailure:(NSError *) error {
+- (void)onConversionDataRequestFailure:(NSError *) error {
     
     NSString *errorMessage = [error localizedDescription];
     NSLog(@"[AppsFlyer Plugin] onConversionDataRequestFailure: %@", [error localizedDescription]);
