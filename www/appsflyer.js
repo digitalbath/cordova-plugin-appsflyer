@@ -27,7 +27,7 @@
   };
 
   AppsFlyer.prototype.setDeviceTrackingDisabled = function(disabled) {
-    cordova.exec(null, null, "AppsFlyerPlugin", "setDeviceTrackingDisabled", [disabled]);
+    cordova.exec(null, null, "AppsFlyerPlugin", "setDeviceTrackingDisabled", [!!disabled]);
   };
 
   AppsFlyer.prototype.getAppsFlyerUID = function(callbackFn) {
