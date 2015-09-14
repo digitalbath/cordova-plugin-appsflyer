@@ -68,9 +68,9 @@
         return;
     }
     
-    NSString* emails = [command.arguments objectAtIndex:0];
-    NSString* cryptMethodValue = "";
-    EmailCryptType* cryptMethod;
+    NSArray* emails = [command.arguments objectAtIndex:0];
+    NSString* cryptMethodValue = @"";
+    EmailCryptType cryptMethod;
 
     if ([command.arguments count] == 2) {
         cryptMethodValue = [command.arguments objectAtIndex:1];
