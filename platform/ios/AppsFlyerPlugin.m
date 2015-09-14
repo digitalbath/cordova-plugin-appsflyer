@@ -93,7 +93,7 @@
         return;
     }
     
-    BOOL disabled = [command.arguments objectAtIndex:0];
+    BOOL disabled = [@(YES) isEqual:[command.arguments objectAtIndex:0]];
     [AppsFlyerTracker sharedTracker].deviceTrackingDisabled = disabled;
 }
 
@@ -103,7 +103,7 @@
         return;
     }
     
-    BOOL disabled = [command.arguments objectAtIndex:0];
+    BOOL disabled = [@(YES) isEqual:[command.arguments objectAtIndex:0]];
     [AppsFlyerTracker sharedTracker].disableAppleAdSupportTracking = disabled;
 }
 
