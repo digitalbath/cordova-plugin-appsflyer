@@ -265,11 +265,12 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 	{
 		try
 		{
-			String customeUserId = parameters.getString(0);
-			if(customeUserId == null || customeUserId.length()==0)
-			{
-				return;
+			String customeUserId;
+
+			if (parameters.length() > 0) {
+				customeUserId = parameters.getString(0)
 			}
+
         	AppsFlyerLib.setCustomerUserId(customeUserId);
         	PluginResult r = new PluginResult(PluginResult.Status.OK);
         	r.setKeepCallback(false);
@@ -305,11 +306,6 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 
 			if (parameters.length() > 1) {
 				cryptMethodValue = parameters.getString(1);
-			}
-
-			if(emailsJSON == null || emailsJSON.length() == 0)
-			{
-				return;
 			}
 
 			List<String> emails = new ArrayList<String>();
