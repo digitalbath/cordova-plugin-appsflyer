@@ -268,7 +268,7 @@ public class AppsFlyerPlugin extends CordovaPlugin {
 			String customeUserId;
 
 			if (parameters.length() > 0) {
-				customeUserId = parameters.getString(0)
+				customeUserId = parameters.getString(0);
 			}
 
         	AppsFlyerLib.setCustomerUserId(customeUserId);
