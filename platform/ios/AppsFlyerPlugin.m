@@ -72,6 +72,10 @@
     NSString* cryptMethodValue = @"";
     EmailCryptType cryptMethod;
 
+    if ([emails count] == 0) {
+        emails = nil;
+    }
+
     if ([command.arguments count] == 2) {
         cryptMethodValue = [command.arguments objectAtIndex:1];
     }
