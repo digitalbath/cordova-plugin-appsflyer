@@ -5,10 +5,8 @@
 
 @synthesize callbackId;
 
-- (CDVPlugin *)initWithWebView:(UIWebView *)theWebView
+- (void)initPlugin
 {
-    self = (AppsFlyerPlugin *)[super initWithWebView:theWebView];
-    return self;
 }
 
 - (void)initSdk:(CDVInvokedUrlCommand*)command
@@ -16,22 +14,22 @@
     if ([command.arguments count] < 2) {
         return;
     }
-    
+
     self.callbackId = command.callbackId;
-    
+
     [self.commandDelegate runInBackground:^{
-        
+
         CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_NO_RESULT];
         // leave communication channel open with keepcallback
         [pluginResult setKeepCallback:[NSNumber numberWithBool:YES]];
         [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
-        
+
     }];
-    
+
     NSString* devKey = [command.arguments objectAtIndex:0];
     NSString* appId = [command.arguments objectAtIndex:1];
-    
-    
+
+
     [AppsFlyerTracker sharedTracker].appleAppID = appId;
     [AppsFlyerTracker sharedTracker].appsFlyerDevKey = devKey;
     [[AppsFlyerTracker sharedTracker] trackAppLaunch];
@@ -47,7 +45,7 @@
     if ([command.arguments count] == 0) {
         return;
     }
-    
+
     NSString* currencyId = [command.arguments objectAtIndex:0];
     [AppsFlyerTracker sharedTracker].currencyCode = currencyId;
 }
@@ -57,7 +55,7 @@
     if ([command.arguments count] == 0) {
         return;
     }
-    
+
     NSString* userId = [command.arguments objectAtIndex:0];
     [AppsFlyerTracker sharedTracker].customerUserID  = userId;
 }
@@ -67,7 +65,7 @@
     if ([command.arguments count] == 0) {
         return;
     }
-    
+
     NSArray* emails = [command.arguments objectAtIndex:0];
     NSString* cryptMethodValue = @"";
     EmailCryptType cryptMethod;
@@ -96,7 +94,7 @@
     if ([command.arguments count] == 0) {
         return;
     }
-    
+
     BOOL disabled = [@(YES) isEqual:[command.arguments objectAtIndex:0]];
     [AppsFlyerTracker sharedTracker].deviceTrackingDisabled = disabled;
 }
@@ -106,7 +104,7 @@
     if ([command.arguments count] == 0) {
         return;
     }
-    
+
     BOOL disabled = [@(YES) isEqual:[command.arguments objectAtIndex:0]];
     [AppsFlyerTracker sharedTracker].disableAppleAdSupportTracking = disabled;
 }
@@ -126,18 +124,18 @@
     if ([command.arguments count] < 2) {
         return;
     }
-    
+
     NSString* eventName = [command.arguments objectAtIndex:0];
     NSDictionary* eventValues = [command.arguments objectAtIndex:1];
     [[AppsFlyerTracker sharedTracker] trackEvent:eventName withValues:eventValues];
 }
 
 - (void)onConversionDataReceived:(NSDictionary*) installData {
-    
+
     if (self.callbackId) {
         NSLog(@"[AppsFlyer Plugin] onConversionDataReceived: sending plugin result");
-        
-        
+
+
         CDVPluginResult *result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsDictionary:installData];
         [result setKeepCallback:[NSNumber numberWithBool:YES]];
         [self.commandDelegate sendPluginResult:result callbackId:self.callbackId];
@@ -148,13 +146,13 @@
 }
 
 - (void)onConversionDataRequestFailure:(NSError *) error {
-    
+
     NSString *errorMessage = [error localizedDescription];
     NSLog(@"[AppsFlyer Plugin] onConversionDataRequestFailure: %@", [error localizedDescription]);
-    
+
     if (self.callbackId) {
         NSLog(@"[AppsFlyer Plugin] onConversionDataRequestFailure: sending error");
-        
+
         CDVPluginResult *commandResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:errorMessage];
         [self.commandDelegate sendPluginResult:commandResult callbackId:self.callbackId];
     }
